@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="app_name">FallDetection</string>
+
+    <string name="header_main_activity">Intestazione dell\'activity principale</string>
+    <string name="status_active">Attivo</string>
+    <string name="status_inactive">Non attivo</string>
+    <string name="tap_to_activate">Tocca qui per attivare</string>
+    <string name="tap_to_deactivate">Tocca qui per disattivare</string>
+    <string name="number_of_falls_detected">Cadute rilevate:</string>
+    <string name="number_of_falls_confirmed">Cadute confermate:</string>
+
+    <string name="action_settings">Impostazioni</string>
+
+    <string name="user_information">Informazioni sull\'utente</string>
+    <string name="user_sex">Sesso</string>
+    <string-array name="genders">
+        <item>Maschio</item>
+        <item>Femmina</item>
+    </string-array>
+    <string name="user_age">Età</string>
+    <string name="user_age_summary">%s anni</string>
+    <string name="user_age_dialog_message">Inserisci la tua età:</string>
+    <string name="user_height">Altezza</string>
+    <string name="user_height_summary">%s cm</string>
+    <string name="user_height_dialog_message">Inserisci la tua altezza in centimetri:</string>
+    <string name="user_weight">Peso</string>
+    <string name="user_weight_summary">%s kg</string>
+    <string name="user_weight_dialog_message">Inserisci il tuo peso in chilogrammi:</string>
+    <string name="alerts">Segnalazioni</string>
+    <string name="alerts_send_sms">Invio SMS</string>
+    <string name="alerts_send_sms_summary">Invia un SMS quando viene rilevata una caduta</string>
+    <string name="alerts_make_call">Avvio chiamata</string>
+    <string name="alerts_make_call_summary">Avvia una chiamata quando viene rilevata una caduta</string>
+    <string name="alerts_alarm_sound">Suono di allarme</string>
+    <string name="alerts_alarm_sound_summary">%s</string>
+    <string name="alerts_alarm_sound_summary_empty">Esegui un tono quando viene rilevata una caduta</string>
+    <string name="alerts_interval">Tempo di attesa</string>
+    <string name="alerts_interval_summary">%s secondi</string>
+    <string name="alerts_interval_summary_empty">Attendi un certo tempo prima di segnalare la caduta</string>
+    <string name="alerts_interval_dialog_message">Inserisci il tempo di attesa (in secondi) prima di
+        segnalare una caduta:</string>
+
+    <string name="configure_sms">Configura invio SMS</string>
+    <string name="sms_content">Testo</string>
+    <string name="sms_content_summary">Cambia il testo dell\'SMS che sarà inviato</string>
+    <string name="sms_content_summary_empty">Specifica il testo dell\'SMS che sarà inviato</string>
+    <string name="sms_content_dialog_message">Inserisci il testo dell\'SMS che sarà inviato in
+        caso di caduta:</string>
+    <string name="sms_content_default">Sono caduto e ho bisogno di assistenza.</string>
+    <string name="sms_content_my_location">La mia posizione attuale è:</string>
+    <string name="sms_recipients">Destinatari</string>
+    <string name="sms_add_location">Posizione</string>
+    <string name="sms_add_location_summary">Aggiungi informazioni sulla posizione usando il GPS</string>
+
+    <string name="configure_phone_call">Configura chiamata</string>
+    <string name="phone_call_recipient">Destinatario</string>
+
+    <string name="statistics">Statistiche</string>
+    <string name="statistics_send">Invia statistiche</string>
+    <string name="statistics_send_summary">Invia statistiche anonime a un server fidato per
+        migliorare questa app</string>
+
+    <string name="not_set">(non impostato)</string>
+    <string name="unknown_number">Numero sconosciuto</string>
+    <string name="no_accelerometer_available">Nessun accelerometro disponibile!</string>
+    <string name="no_recipient_specified">Nessun destinatario impostato</string>
+
+    <string name="fall_detection_service">Servizio per il rilevamento delle cadute</string>
+
+    <string name="fall_detected_activity">Rilevata caduta</string>
+    <string name="fall_detected">È stata rilevata una caduta!</string>
+</resources>

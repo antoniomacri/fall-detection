@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin" android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" android:orientation="vertical">
+
+    <TextView android:id="@+id/LabelHeader" android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:text="@string/header_main_activity">
+    </TextView>
+
+    <RelativeLayout android:id="@+id/activate_button"
+        android:layout_height="wrap_content" android:layout_width="fill_parent"
+        android:layout_marginTop="10dip" android:layout_marginBottom="10dip"
+        android:clickable="true" android:focusable="true"
+        android:focusableInTouchMode="false">
+        <ImageView android:id="@+id/activate_image" android:src="@android:drawable/ic_media_pause"
+            android:contentDescription="@string/status_inactive"
+            android:clickable="false" android:focusable="false"
+            android:focusableInTouchMode="false" android:layout_alignParentTop="true"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginRight="5dip" />
+        <TextView android:id="@+id/activate_title" android:text="@string/status_inactive"
+            android:clickable="false" android:focusable="false"
+            android:focusableInTouchMode="false" android:textSize="20sp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/activate_image"
+            android:layout_toRightOf="@+id/activate_image" />
+        <TextView android:id="@+id/activate_summary" android:text="@string/tap_to_activate"
+            android:clickable="false" android:focusable="false"
+            android:focusableInTouchMode="false" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_below="@+id/activate_title"
+            android:layout_alignLeft="@+id/activate_title" />
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <View android:id="@+id/sep" android:layout_width="fill_parent"
+            android:layout_height="1dip" android:layout_marginTop="5dip"
+            android:layout_marginBottom="5dip" android:background="#A0A0A0" />
+        <TableLayout android:layout_centerInParent="true"
+            android:layout_below="@+id/sep" android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TableRow android:id="@+id/tableRowFallsDetected"
+                android:layout_height="wrap_content" android:padding="5dip">
+                <TextView android:text="@string/number_of_falls_detected"
+                    android:layout_marginRight="10dip" />
+                <TextView android:id="@+id/number_of_falls_detected"
+                    android:gravity="right" />
+            </TableRow>
+            <TableRow android:id="@+id/tableRowFallsConfirmed"
+                android:layout_height="wrap_content" android:padding="5dip">
+                <TextView android:text="@string/number_of_falls_confirmed"
+                    android:layout_marginRight="10dip" android:id="@+id/ciccio" />
+                <TextView android:id="@+id/number_of_falls_confirmed"
+                    android:gravity="right" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+</LinearLayout>

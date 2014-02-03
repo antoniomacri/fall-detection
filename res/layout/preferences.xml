@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/it.unipi.ing.falldetection">
+
+    <PreferenceCategory android:title="@string/user_information">
+        <ListPreference android:key="user_sex" android:title="@string/user_sex"
+            android:entryValues="@array/gender_values" android:entries="@array/genders" />
+        <EditTextPreference android:key="user_age"
+            android:title="@string/user_age" android:dialogMessage="@string/user_age_dialog_message"
+            android:gravity="center" android:inputType="numberDecimal">
+        </EditTextPreference>
+        <EditTextPreference android:key="user_height"
+            android:title="@string/user_height" android:dialogMessage="@string/user_height_dialog_message"
+            android:gravity="center" android:inputType="numberDecimal">
+        </EditTextPreference>
+        <EditTextPreference android:key="user_weight"
+            android:title="@string/user_weight" android:dialogMessage="@string/user_weight_dialog_message"
+            android:gravity="center" android:inputType="numberDecimal">
+        </EditTextPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/alerts">
+        <CheckBoxPreference android:key="alerts_send_sms"
+            android:title="@string/alerts_send_sms" android:summary="@string/alerts_send_sms_summary" />
+        <CheckBoxPreference android:key="alerts_make_call"
+            android:title="@string/alerts_make_call" android:summary="@string/alerts_make_call_summary" />
+        <RingtonePreference android:key="alerts_alarm_sound"
+            android:title="@string/alerts_alarm_sound" android:showDefault="true"
+            android:showSilent="true" android:ringtoneType="all" />
+        <!-- About RingtonePreference theme, see: http://stackoverflow.com/q/16589467/2563992 -->
+        <EditTextPreference android:key="alerts_interval"
+            android:title="@string/alerts_interval" android:dialogMessage="@string/alerts_interval_dialog_message"
+            android:gravity="center" android:inputType="numberDecimal">
+        </EditTextPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/configure_sms">
+        <EditTextPreference android:key="sms_content"
+            android:title="@string/sms_content" android:text="@string/sms_content_default"
+            android:dialogMessage="@string/sms_content_dialog_message"
+            android:inputType="textMultiLine">
+        </EditTextPreference>
+        <it.unipi.ing.falldetection.ContactsListPreference
+            android:key="sms_recipients" android:title="@string/sms_recipients">
+        </it.unipi.ing.falldetection.ContactsListPreference>
+        <CheckBoxPreference android:key="sms_add_location"
+            android:title="@string/sms_add_location" android:summary="@string/sms_add_location_summary" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/configure_phone_call">
+        <it.unipi.ing.falldetection.ContactsListPreference
+            android:key="phone_call_recipient" android:title="@string/phone_call_recipient"
+            custom:singleChoice="true">
+        </it.unipi.ing.falldetection.ContactsListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/statistics">
+        <CheckBoxPreference android:key="statistics_send"
+            android:title="@string/statistics_send" android:summary="@string/statistics_send_summary">
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

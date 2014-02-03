@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="it.unipi.ing.falldetection" android:versionCode="1"
+    android:versionName="1.0">
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" android:theme="@style/AppTheme">
+        <activity android:name="it.unipi.ing.falldetection.MainActivity"
+            android:label="@string/app_name" android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="it.unipi.ing.falldetection.UserPreferencesActivity"
+            android:label="@string/action_settings" android:parentActivityName="it.unipi.ing.falldetection.MainActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.unipi.ing.falldetection.MainActivity" />
+        </activity>
+        <activity android:name="it.unipi.ing.falldetection.FallDetectedActivity"
+            android:label="@string/fall_detected_activity">
+        </activity>
+        <service android:name=".FallDetectionService" android:exported="false"
+            android:label="@string/fall_detection_service" />
+    </application>
+</manifest>
