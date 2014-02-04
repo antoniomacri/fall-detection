@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="header_main_activity">Intestazione dell\'activity principale</string>
+    <string name="status_active">Attivo</string>
+    <string name="status_inactive">Non attivo</string>
+    <string name="tap_to_activate">Tocca qui per attivare</string>
+    <string name="tap_to_deactivate">Tocca qui per disattivare</string>
+    <string name="number_of_falls_detected">Cadute rilevate:</string>
+    <string name="number_of_falls_confirmed">Cadute confermate:</string>
+</resources>

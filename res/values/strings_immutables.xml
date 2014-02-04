@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+
+<!-- This file is intended to define strings that must be the same for all languages. -->
+<resources>
+    <string name="app_name">FallDetection</string>
+
+    <string-array name="gender_values">
+        <item>m</item>
+        <item>f</item>
+    </string-array>
+</resources>
