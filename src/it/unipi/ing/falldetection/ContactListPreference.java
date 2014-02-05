@@ -6,6 +6,7 @@ import android.app.AlertDialog.Builder;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -15,33 +16,59 @@ import android.preference.DialogPreference;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.util.AttributeSet;
-import android.util.Pair;
 
 /**
- * A {@link Preference} that displays a list of entries as a dialog.
+ * A {@link Preference} that displays a list of contacts as a dialog.
  * <p>
- * This preference will store a set of strings into the SharedPreferences. This set will contain one
- * or more values from the {@link #setEntryValues(CharSequence[])} array.
- * 
- * @attr ref android.R.styleable#MultiSelectListPreference_entries
- * @attr ref android.R.styleable#MultiSelectListPreference_entryValues
+ * This preference will store into the SharedPreferences a string composed by a list of values. To
+ * unpack this list from the persisted string, use the {@link #unpack} method. This list will
+ * contain one or more values from the array returned by {@link #getAllContacts}.
  */
 public class ContactListPreference extends DialogPreference
 {
     private static final String separator = "\u0001\u0007\u001D\u0007\u0001";
 
-    private String[] mEntries;
-    private String[] mEntryValues;
-    private Set<String> mValues = new HashSet<String>();
-    private Set<String> mNewValues = new HashSet<String>();
-    private boolean mPreferenceChanged;
+    /**
+     * Represents a contact consisting of a title and a value (e.g., phone number, email address).
+     */
+    public static class Contact
+    {
+        public final String title;
+        public final String value;
+
+        public Contact(String title, String value) {
+            this.title = title;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return title + " (" + value + ")";
+        }
+    }
+
+    private final Contact[] contacts;
+    private List<String> values = new ArrayList<String>();
+    private List<String> newValues = new ArrayList<String>();
+    private boolean preferenceChanged;
     private boolean singleChoice = false;
 
+    /**
+     * Constructs a new instance of ContactListPreference.
+     *
+     * @param context
+     *            The Context this is associated with, through which it can access the current
+     *            theme, resources, {@link SharedPreferences}, etc.
+     * @param attrs
+     *            The attributes of the XML tag that is inflating the preference.
+     *
+     *            Currently, just the "singleChoice" attribute is supported, which specifies whether
+     *            the user is allowed to choice only a single contact from the list or many of them.
+     */
     public ContactListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        TypedArray a = getContext().obtainStyledAttributes(attrs,
-                R.styleable.ContactListPreference);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ContactListPreference);
         for (int i = 0, count = a.getIndexCount(); i < count; ++i) {
             int attr = a.getIndex(i);
             switch (attr) {
@@ -51,46 +78,65 @@ public class ContactListPreference extends DialogPreference
             }
         }
         a.recycle();
+
+        contacts = getContacts().toArray(new Contact[0]);
     }
 
+    /**
+     * Constructs a new instance of ContactListPreference.
+     *
+     * @param context
+     *            The Context this is associated with, through which it can access the current
+     *            theme, resources, {@link SharedPreferences}, etc.
+     */
     public ContactListPreference(Context context) {
-        this(context, null);
+        super(context, null);
+
+        contacts = getContacts().toArray(new Contact[0]);
     }
 
     /**
-     * The list of entries to be shown in the list in subsequent dialogs.
-     * 
-     * @return The list as an array.
+     * Gets the list of all contacts to be shown in the dialog.
+     *
+     * This list contains all contacts known to the system (for example, all contacts in the phone
+     * book) plus all values retrieved from the SharedPreferences without a matching contact (for
+     * example, all numbers specified in the preferences with no corresponding contact in the phone
+     * book). With the latter values, a default title is used for the contacts.
      */
-    public String[] getEntries() {
-        return mEntries;
+    public Contact[] getAllContacts() {
+        List<Contact> result = Arrays.asList(contacts);
+        for (String number : values) {
+            boolean present = false;
+            for (Contact c : result) {
+                if (number.equals(c.value)) {
+                    present = true;
+                    break;
+                }
+            }
+            if (!present) {
+                String name = getContext().getResources().getString(R.string.unknown_number);
+                result.add(new Contact(name, number));
+            }
+        }
+        return result.toArray(new Contact[result.size()]);
     }
 
     /**
-     * Returns the array of values to be saved for the preference.
-     * 
-     * @return The array of values.
+     * Gets the values (e.g., phone numbers or email addresses) of the contacts to be persisted.
      */
-    public String[] getEntryValues() {
-        return mEntryValues;
+    public String[] getValues() {
+        return values.toArray(new String[values.size()]);
     }
 
     /**
-     * Retrieves the current value of the key.
+     * Sets the values of the contacts to be persisted.
+     *
+     * @param array
+     *            The values of the contacts to be persisted. This array should contain values
+     *            obtained using the {@link #getAllContacts()} method.
      */
-    public Set<String> getValues() {
-        return mValues;
-    }
-
-    /**
-     * Sets the value of the key. This should contain entries in {@link #getEntryValues()}.
-     * 
-     * @param values
-     *            The values to set for the key.
-     */
-    private void setValues(Set<String> values) {
-        mValues.clear();
-        mValues.addAll(values);
+    private void setValues(String[] array) {
+        values = Arrays.asList(array);
         persistString(pack(values));
     }
 
@@ -99,60 +145,59 @@ public class ContactListPreference extends DialogPreference
     {
         super.onPrepareDialogBuilder(builder);
 
-        setupContacts();
-
-        String[] titles = new String[mEntries.length];
-        for (int i = 0; i < titles.length; i++) {
-            titles[i] = mEntries[i] + " (" + mEntryValues[i] + ")";
+        String[] items = new String[contacts.length];
+        for (int i = 0; i < items.length; i++) {
+            items[i] = contacts[i].toString();
         }
         if (singleChoice) {
             DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    String value = mEntryValues[which];
-                    if (mNewValues.size() != 1 || mNewValues.iterator().next() != value) {
-                        mNewValues.clear();
-                        mNewValues.add(value);
-                        mPreferenceChanged = true;
+                    String number = contacts[which].value;
+                    if (newValues.size() != 1 || newValues.get(0) != number) {
+                        newValues.clear();
+                        newValues.add(number);
+                        preferenceChanged = true;
                     }
                 }
             };
-            builder.setSingleChoiceItems(titles, getSelectedItem(), listener);
+            builder.setSingleChoiceItems(items, getSelectedItem(), listener);
         }
         else {
             boolean[] checkedItems = getSelectedItems();
             OnMultiChoiceClickListener listener = new OnMultiChoiceClickListener() {
                 public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                     if (isChecked) {
-                        mPreferenceChanged |= mNewValues.add(mEntryValues[which]);
+                        preferenceChanged |= newValues.add(contacts[which].value);
                     }
                     else {
-                        mPreferenceChanged |= mNewValues.remove(mEntryValues[which]);
+                        preferenceChanged |= newValues.remove(contacts[which].value);
                     }
                 }
             };
-            builder.setMultiChoiceItems(titles, checkedItems, listener);
+            builder.setMultiChoiceItems(items, checkedItems, listener);
         }
-        mNewValues.clear();
-        mNewValues.addAll(mValues);
+        newValues.clear();
+        newValues.addAll(values);
     }
 
     private int getSelectedItem()
     {
-        if (!mValues.isEmpty()) {
-            final String value = mValues.iterator().next();
-            for (int i = 0, count = mEntryValues.length; i < count; i++)
-                if (value.equals(mEntryValues[i]))
+        if (values.size() > 0) {
+            final String value = values.get(0);
+            for (int i = 0, count = contacts.length; i < count; i++) {
+                if (value.equals(contacts[i].value))
                     return i;
+            }
         }
         return -1;
     }
 
     private boolean[] getSelectedItems()
     {
-        final int count = mEntryValues.length;
+        final int count = contacts.length;
         boolean[] result = new boolean[count];
         for (int i = 0; i < count; i++) {
-            result[i] = mValues.contains(mEntryValues[i]);
+            result[i] = values.contains(contacts[i].value);
         }
         return result;
     }
@@ -162,88 +207,44 @@ public class ContactListPreference extends DialogPreference
     {
         super.onDialogClosed(positiveResult);
 
-        if (positiveResult && mPreferenceChanged) {
-            final Set<String> values = mNewValues;
-            if (callChangeListener(values)) {
-                setValues(values);
+        if (positiveResult && preferenceChanged) {
+            if (callChangeListener(newValues)) {
+                setValues(newValues.toArray(new String[newValues.size()]));
             }
         }
-        mPreferenceChanged = false;
+        preferenceChanged = false;
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index)
     {
         final CharSequence[] defaultValues = a.getTextArray(index);
-        final int valueCount = defaultValues.length;
-        final Set<String> result = new HashSet<String>();
-        for (int i = 0; i < valueCount; i++) {
-            result.add(defaultValues[i].toString());
+        final int count = defaultValues.length;
+        final String[] result = new String[count];
+        for (int i = 0; i < count; i++) {
+            result[i] = defaultValues[i].toString();
         }
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
     {
-        Set<String> values = restoreValue ? unpack(getPersistedString(pack(mValues)))
-                : (Set<String>)defaultValue;
-        if (singleChoice && values.size() > 1) {
-            String first = values.iterator().next();
-            values.clear();
-            values.add(first);
+        String[] vals = restoreValue ? unpack(getPersistedString(pack(values)))
+                : (String[])defaultValue;
+        if (singleChoice && vals.length > 1) {
+            vals = new String[] { vals[0] };
         }
-        setValues(values);
+        setValues(vals);
     }
 
-    protected static String pack(Set<String> set) {
-        return join(set, separator);
-    }
-
-    protected static Set<String> unpack(String val) {
-        if (val == null || "".equals(val)) {
-            return new HashSet<String>();
-        }
-        else {
-            Set<String> set = new HashSet<String>();
-            set.addAll(Arrays.asList(val.split(separator)));
-            return set;
-        }
-    }
-
-    protected static String join(Iterable<?> iterable, String separator) {
-        Iterator<?> oIter;
-        if (iterable == null || (!(oIter = iterable.iterator()).hasNext()))
-            return "";
-        StringBuilder oBuilder = new StringBuilder(String.valueOf(oIter.next()));
-        while (oIter.hasNext())
-            oBuilder.append(separator).append(oIter.next());
-        return oBuilder.toString();
-    }
-
-    private void setupContacts()
+    /**
+     * Gets all contacts from the phone book. For each contact, the title will contain the display
+     * name, the value will contain the associated phone number.
+     */
+    protected List<Contact> getContacts()
     {
-        if (mEntries == null) {
-            Pair<List<String>, List<String>> list = getContacts();
-            for (String value : mValues) {
-                if (!list.second.contains(value)) {
-                    list.first.add(getContext().getResources().getString(R.string.unknown_number));
-                    list.second.add(value);
-                }
-            }
-            mEntries = list.first.toArray(new String[list.first.size()]);
-            mEntryValues = list.second.toArray(new String[list.second.size()]);
-        }
-    }
-
-    protected Pair<List<String>, List<String>> getContacts()
-    {
-        List<String> displayNames = new ArrayList<String>();
-        List<String> numbers = new ArrayList<String>();
-        Pair<List<String>, List<String>> list;
-        list = new Pair<List<String>, List<String>>(displayNames, numbers);
-
+        List<Contact> contacts = new ArrayList<Contact>();
         ContentResolver cr = getContext().getContentResolver();
         String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sortOrder);
@@ -261,12 +262,31 @@ public class ContactListPreference extends DialogPreference
             while (phones.moveToNext()) {
                 int numberIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 String number = phones.getString(numberIndex);
-                displayNames.add(displayName);
-                numbers.add(PhoneNumberUtils.stripSeparators(number));
+                contacts.add(new Contact(displayName, PhoneNumberUtils.stripSeparators(number)));
             }
             phones.close();
         }
-        return list;
+        return contacts;
+    }
+
+    public static String pack(List<String> array) {
+        if (array == null || array.size() == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder(array.get(0));
+        for (int i = 1; i < array.size(); i++) {
+            sb.append(separator).append(array.get(i));
+        }
+        return sb.toString();
+    }
+
+    public static String[] unpack(String val) {
+        if (val == null || "".equals(val)) {
+            return new String[0];
+        }
+        else {
+            return val.split(separator);
+        }
     }
 
     @Override
@@ -284,7 +304,7 @@ public class ContactListPreference extends DialogPreference
 
     private static class SavedState extends BaseSavedState
     {
-        Set<String> values;
+        String[] values;
 
         public SavedState(Parcel source) {
             super(source);
@@ -298,7 +318,7 @@ public class ContactListPreference extends DialogPreference
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeStringArray(values.toArray(new String[0]));
+            dest.writeStringArray(values);
         }
     }
 }

@@ -70,35 +70,34 @@ public class UserPreferencesActivity extends PreferenceActivity implements
         }
         else if (pref instanceof ContactListPreference) {
             ContactListPreference clist = (ContactListPreference)pref;
-            Set<String> values = clist.getValues();
-            if (values.size() == 0) {
+            String[] values = clist.getValues();
+            if (values.length == 0) {
                 pref.setSummary(R.string.no_recipient_specified);
             }
             else {
-                List<String> titles = new ArrayList<String>();
-                List<String> numbers = new ArrayList<String>();
-                String[] entryValues = clist.getEntryValues();
-                String[] entries = clist.getEntries();
+                List<String> contactTitles = new ArrayList<String>();
+                List<String> contactValues = new ArrayList<String>();
+                ContactListPreference.Contact[] contacts = clist.getAllContacts();
                 for (String value : values) {
                     int pos = 0;
-                    while (pos < entryValues.length && !entryValues[pos].equals(value)) {
+                    while (pos < contacts.length && !contacts[pos].value.equals(value)) {
                         pos++;
                         continue;
                     }
-                    if (pos < entryValues.length) {
-                        titles.add(entries[pos]);
-                        numbers.add(entryValues[pos]);
+                    if (pos < contacts.length) {
+                        contactTitles.add(contacts[pos].title);
+                        contactValues.add(contacts[pos].value);
                     }
                     else {
-                        titles.add(getResources().getString(R.string.unknown_number));
-                        numbers.add(value);
+                        contactTitles.add(getResources().getString(R.string.unknown_number));
+                        contactValues.add(value);
                     }
                 }
-                if (values.size() == 1) {
-                    pref.setSummary(titles.get(0) + " (" + numbers.get(0) + ")");
+                if (values.length == 1) {
+                    pref.setSummary(contactTitles.get(0) + " (" + contactValues.get(0) + ")");
                 }
                 else {
-                    pref.setSummary(join(titles, ", "));
+                    pref.setSummary(join(contactTitles, ", "));
                 }
             }
         }
