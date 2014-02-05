@@ -97,7 +97,7 @@ public class UserPreferencesActivity extends PreferenceActivity implements
                     pref.setSummary(contactTitles.get(0) + " (" + contactValues.get(0) + ")");
                 }
                 else {
-                    pref.setSummary(join(contactTitles, ", "));
+                    pref.setSummary(TextUtils.join(", ", contactTitles));
                 }
             }
         }
@@ -122,15 +122,5 @@ public class UserPreferencesActivity extends PreferenceActivity implements
                 pref.setSummary(getResources().getString(id, value));
             }
         }
-    }
-
-    private static String join(Iterable<?> iterable, String separator) {
-        Iterator<?> oIter;
-        if (iterable == null || (!(oIter = iterable.iterator()).hasNext()))
-            return "";
-        StringBuilder oBuilder = new StringBuilder(String.valueOf(oIter.next()));
-        while (oIter.hasNext())
-            oBuilder.append(separator).append(oIter.next());
-        return oBuilder.toString();
     }
 }
