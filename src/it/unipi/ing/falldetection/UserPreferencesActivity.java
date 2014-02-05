@@ -68,8 +68,8 @@ public class UserPreferencesActivity extends PreferenceActivity implements
                 pref.setSummary(listPref.getEntry());
             }
         }
-        else if (pref instanceof ContactsListPreference) {
-            ContactsListPreference clist = (ContactsListPreference)pref;
+        else if (pref instanceof ContactListPreference) {
+            ContactListPreference clist = (ContactListPreference)pref;
             Set<String> values = clist.getValues();
             if (values.size() == 0) {
                 pref.setSummary(R.string.no_recipient_specified);

@@ -40,18 +40,18 @@
             android:dialogMessage="@string/sms_content_dialog_message"
             android:inputType="textMultiLine">
         </EditTextPreference>
-        <it.unipi.ing.falldetection.ContactsListPreference
+        <it.unipi.ing.falldetection.ContactListPreference
             android:key="sms_recipients" android:title="@string/sms_recipients">
-        </it.unipi.ing.falldetection.ContactsListPreference>
+        </it.unipi.ing.falldetection.ContactListPreference>
         <CheckBoxPreference android:key="sms_add_location"
             android:title="@string/sms_add_location" android:summary="@string/sms_add_location_summary" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/configure_phone_call">
-        <it.unipi.ing.falldetection.ContactsListPreference
+        <it.unipi.ing.falldetection.ContactListPreference
             android:key="phone_call_recipient" android:title="@string/phone_call_recipient"
             custom:singleChoice="true">
-        </it.unipi.ing.falldetection.ContactsListPreference>
+        </it.unipi.ing.falldetection.ContactListPreference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/statistics">

@@ -26,7 +26,7 @@ import android.util.Pair;
  * @attr ref android.R.styleable#MultiSelectListPreference_entries
  * @attr ref android.R.styleable#MultiSelectListPreference_entryValues
  */
-public class ContactsListPreference extends DialogPreference
+public class ContactListPreference extends DialogPreference
 {
     private static final String separator = "\u0001\u0007\u001D\u0007\u0001";
 
@@ -37,15 +37,15 @@ public class ContactsListPreference extends DialogPreference
     private boolean mPreferenceChanged;
     private boolean singleChoice = false;
 
-    public ContactsListPreference(Context context, AttributeSet attrs) {
+    public ContactListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs,
-                R.styleable.ContactsListPreference);
+                R.styleable.ContactListPreference);
         for (int i = 0, count = a.getIndexCount(); i < count; ++i) {
             int attr = a.getIndex(i);
             switch (attr) {
-            case R.styleable.ContactsListPreference_singleChoice:
+            case R.styleable.ContactListPreference_singleChoice:
                 singleChoice = a.getBoolean(attr, false);
                 break;
             }
@@ -53,7 +53,7 @@ public class ContactsListPreference extends DialogPreference
         a.recycle();
     }
 
-    public ContactsListPreference(Context context) {
+    public ContactListPreference(Context context) {
         this(context, null);
     }
 
