@@ -1,8 +1,6 @@
 package it.unipi.ing.falldetection.core;
 
-public interface IFallDetectionListener
+public interface OnFallConfirmedListener
 {
-    void onFallDetected(IFallDetectionStrategy sender, FallDetectionEvent event);
-
     void onFallConfirmed(IFallDetectionStrategy sender, FallDetectionEvent event);
 }

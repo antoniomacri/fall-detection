@@ -16,21 +16,21 @@ public class SimpleFallDetectionStrategy implements IFallDetectionStrategy, ISen
         source.addListener(this);
     }
 
-    protected Vector<IFallDetectionListener> listeners = new Vector<IFallDetectionListener>();
+    protected Vector<OnFallDetectedListener> listeners = new Vector<OnFallDetectedListener>();
 
     @Override
-    public void addListener(IFallDetectionListener listener) {
+    public void addListener(OnFallDetectedListener listener) {
         listeners.addElement(listener);
     }
 
     @Override
-    public void removeListener(IFallDetectionListener listener) {
+    public void removeListener(OnFallDetectedListener listener) {
         listeners.removeElement(listener);
     }
 
     protected void fireFallEvent(long timestamp, float reliability) {
         FallDetectionEvent event = new FallDetectionEvent(timestamp, reliability);
-        for (IFallDetectionListener e : listeners) {
+        for (OnFallDetectedListener e : listeners) {
             Log.i(Thread.currentThread() + getClass().getName(), "fireFallEvent to "
                     + e.getClass().getName());
             e.onFallDetected(this, event);

@@ -1,6 +1,6 @@
 package it.unipi.ing.falldetection.core;
 
-public interface IFallDetectionServiceListener extends IFallDetectionListener
+public interface IFallDetectionServiceListener extends OnFallDetectedListener, OnFallConfirmedListener
 {
     void onFallDetectionStarted();
 

@@ -227,7 +227,7 @@ public class FallDetectionService extends Service
         }
     };
 
-    private static class FallListener implements IFallDetectionListener
+    private static class FallListener implements OnFallDetectedListener
     {
         private FallDetectionService service;
 
@@ -250,7 +250,6 @@ public class FallDetectionService extends Service
             service.startActivity(intent);
         }
 
-        @Override
         public void onFallConfirmed(IFallDetectionStrategy sender, FallDetectionEvent event) {
             SharedPreferences preferences = service.getSharedPreferences("", 0);
             String sms_content_default = service.getString(R.string.sms_content_default);
