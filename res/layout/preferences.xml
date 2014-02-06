@@ -20,10 +20,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/alerts">
-        <CheckBoxPreference android:key="alerts_send_sms"
-            android:title="@string/alerts_send_sms" android:summary="@string/alerts_send_sms_summary" />
-        <CheckBoxPreference android:key="alerts_make_call"
-            android:title="@string/alerts_make_call" android:summary="@string/alerts_make_call_summary" />
+        <CheckBoxPreference android:key="alerts_vibrate"
+            android:title="@string/alerts_vibrate" android:summary="@string/alerts_vibrate_summary" />
         <RingtonePreference android:key="alerts_alarm_sound"
             android:title="@string/alerts_alarm_sound" android:showDefault="true"
             android:showSilent="true" android:ringtoneType="all" />
@@ -32,6 +30,10 @@
             android:title="@string/alerts_interval" android:dialogMessage="@string/alerts_interval_dialog_message"
             android:gravity="center" android:inputType="numberDecimal">
         </EditTextPreference>
+        <CheckBoxPreference android:key="alerts_send_sms"
+            android:title="@string/alerts_send_sms" android:summary="@string/alerts_send_sms_summary" />
+        <CheckBoxPreference android:key="alerts_make_call"
+            android:title="@string/alerts_make_call" android:summary="@string/alerts_make_call_summary" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/configure_sms">

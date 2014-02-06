@@ -17,11 +17,9 @@
     <string name="user_weight_dialog_message">Inserisci il tuo peso in chilogrammi:</string>
 
     <string name="alerts">Segnalazioni</string>
-    <string name="alerts_send_sms">Invio SMS</string>
-    <string name="alerts_send_sms_summary">Invia un SMS quando viene rilevata una caduta</string>
-    <string name="alerts_make_call">Avvio chiamata</string>
-    <string name="alerts_make_call_summary">Avvia una chiamata quando viene rilevata una caduta</string>
-    <string name="alerts_alarm_sound">Suono di allarme</string>
+    <string name="alerts_vibrate">Vibrazione</string>
+    <string name="alerts_vibrate_summary">Vibra quando viene rilevata una caduta</string>
+    <string name="alerts_alarm_sound">Suono</string>
     <string name="alerts_alarm_sound_summary">%s</string>
     <string name="alerts_alarm_sound_summary_empty">Esegui un tono quando viene rilevata una caduta</string>
     <string name="alerts_interval">Tempo di attesa</string>
@@ -29,6 +27,10 @@
     <string name="alerts_interval_summary_empty">Attendi un certo tempo prima di segnalare la caduta</string>
     <string name="alerts_interval_dialog_message">Inserisci il tempo di attesa (in secondi) prima di
         segnalare una caduta:</string>
+    <string name="alerts_send_sms">Invio SMS</string>
+    <string name="alerts_send_sms_summary">Invia un SMS quando viene confermata una caduta</string>
+    <string name="alerts_make_call">Avvio chiamata</string>
+    <string name="alerts_make_call_summary">Avvia una chiamata quando viene confermata una caduta</string>
 
     <string name="configure_sms">Configura invio SMS</string>
     <string name="sms_content">Testo</string>
