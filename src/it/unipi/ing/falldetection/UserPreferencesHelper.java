@@ -21,19 +21,46 @@ public final class UserPreferencesHelper
         return sharedPreferences.getString("user_sex", "");
     }
 
+    /**
+     * Gets the user's age.
+     *
+     * @return The age of the user expressed in years or 0.0f if no age was stored.
+     */
     public static float getUserAge(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getFloat("user_age", 0.0f);
+        String value = sharedPreferences.getString("user_age", "").trim();
+        if (!TextUtils.isEmpty(value)) {
+            return Float.parseFloat(value);
+        }
+        return 0.0f;
     }
 
+    /**
+     * Gets the user's height.
+     *
+     * @return The height of the user expressed in centimeters or 0.0f if no height was stored.
+     */
     public static float getUserHeight(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getFloat("user_height", 0.0f);
+        String value = sharedPreferences.getString("user_height", "").trim();
+        if (!TextUtils.isEmpty(value)) {
+            return Float.parseFloat(value);
+        }
+        return 0.0f;
     }
 
+    /**
+     * Gets the user's weight.
+     *
+     * @return The weight of the user expressed in kilograms or 0.0f if no weight was stored.
+     */
     public static float getUserWeight(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getFloat("user_weight", 0.0f);
+        String value = sharedPreferences.getString("user_weight", "").trim();
+        if (!TextUtils.isEmpty(value)) {
+            return Float.parseFloat(value);
+        }
+        return 0.0f;
     }
 
     public static boolean isVibrateEnabled(Context context) {
@@ -46,9 +73,18 @@ public final class UserPreferencesHelper
         return sharedPreferences.getString("alerts_alarm_sound", "");
     }
 
+    /**
+     * Gets the wait interval before alerting the fall.
+     *
+     * @return The wait interval expressed in seconds or 0 if this preference is not set.
+     */
     public static int getAlertTimeout(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getInt("alerts_interval", 0);
+        String value = sharedPreferences.getString("alerts_interval", "").trim();
+        if (!TextUtils.isEmpty(value)) {
+            return Integer.parseInt(value);
+        }
+        return 0;
     }
 
     public static boolean isSmsAlertEnabled(Context context) {

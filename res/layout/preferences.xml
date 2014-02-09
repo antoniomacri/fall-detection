@@ -28,7 +28,7 @@
         <!-- About RingtonePreference theme, see: http://stackoverflow.com/q/16589467/2563992 -->
         <EditTextPreference android:key="alerts_interval"
             android:title="@string/alerts_interval" android:dialogMessage="@string/alerts_interval_dialog_message"
-            android:gravity="center" android:inputType="numberDecimal">
+            android:gravity="center" android:inputType="number">
         </EditTextPreference>
         <CheckBoxPreference android:key="alerts_send_sms"
             android:title="@string/alerts_send_sms" android:summary="@string/alerts_send_sms_summary" />
