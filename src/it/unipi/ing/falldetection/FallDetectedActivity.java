@@ -1,14 +1,19 @@
 package it.unipi.ing.falldetection;
 
 import it.unipi.ing.falldetection.ContactListPreference.Contact;
+
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -135,8 +140,31 @@ public class FallDetectedActivity extends Activity
     }
 
     private void confirm(boolean confirmed) {
-        // TODO: implement confirm()
-        finish();
+        Intent sIntent = new Intent(FallDetectedActivity.this, FallDetectionService.class);
+        bindService(sIntent, new BindAndConfirm(confirmed), 0);
+    }
+
+    private class BindAndConfirm implements ServiceConnection
+    {
+        private boolean confirmed;
+
+        public BindAndConfirm(boolean confirmed) {
+            this.confirmed = confirmed;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            FallDetectionService.Binder b = (FallDetectionService.Binder)binder;
+            Intent intent = getIntent();
+            int token = intent.getIntExtra("token", 0);
+            b.getService().confirmFall(token, confirmed);
+            unbindService(this);
+            finish();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
     }
 
     @Override

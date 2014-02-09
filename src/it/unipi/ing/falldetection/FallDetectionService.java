@@ -19,11 +19,13 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 public class FallDetectionService extends Service
 {
     public static final String FALLDETECTION_START = "FALLDETECTION_START";
     public static final String FALLDETECTION_STOP = "FALLDETECTION_STOP";
+    public static final String FALLDETECTION_CONFIRM_FALL = "FALLDETECTION_CONFIRM_FALL";
 
     private static final int DELAY = SensorManager.SENSOR_DELAY_GAME;
     private static final int ACTIVATION_NOTIFICATION_ID = R.string.fall_detection_service;
@@ -37,6 +39,8 @@ public class FallDetectionService extends Service
     private SensorListener sensorListener;
     private FallListener fallListener;
     private boolean active = false;
+
+    private FallDetectionEvent lastEvent;
 
     private final IBinder binder;
     private final Vector<IFallDetectionServiceListener> listeners;
@@ -59,7 +63,7 @@ public class FallDetectionService extends Service
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         dataManager = new SensorDataManager();
         sensorListener = new SensorListener(dataManager);
-        fallListener = new FallListener(this);
+        fallListener = new FallListener();
         fallDetectionStrategy = new SimpleFallDetectionStrategy(dataManager);
     }
 
@@ -123,6 +127,13 @@ public class FallDetectionService extends Service
         onStartCommand(new Intent(FALLDETECTION_STOP, null, this, getClass()), 0, 1);
     }
 
+    public void confirmFall(int token, boolean confirmed) {
+        Intent intent = new Intent(FALLDETECTION_CONFIRM_FALL, null, this, getClass());
+        intent.putExtra("token", token);
+        intent.putExtra("confirmed", confirmed);
+        onStartCommand(intent, 0, 1);
+    }
+
     private void onHandleIntent(Intent intent)
     {
         String action = intent.getAction();
@@ -131,6 +142,11 @@ public class FallDetectionService extends Service
         }
         else if (FALLDETECTION_STOP.equals(action)) {
             doStopFallDetection();
+        }
+        else if (FALLDETECTION_CONFIRM_FALL.equals(action)) {
+            boolean confirmed = intent.getBooleanExtra("confirmed", true);
+            int token = intent.getIntExtra("token", 0);
+            doConfirmFall(token, confirmed);
         }
     }
 
@@ -195,6 +211,47 @@ public class FallDetectionService extends Service
         fireFallDetectionStopped(false, null);
     }
 
+    private void doConfirmFall(int token, boolean confirmed)
+    {
+        if (lastEvent == null || token != lastEvent.hashCode()) {
+            Log.w(getClass().getName(), "Attempt to confirm or deny an old event.");
+            return;
+        }
+
+        if (confirmed) {
+            if (UserPreferencesHelper.isSmsAlertEnabled(this)) {
+                sendSms();
+            }
+            if (UserPreferencesHelper.isPhoneCallAlertEnabled(this)) {
+                makeCall();
+            }
+
+            StatisticsHelper.stepFallConfirmedCount(this);
+            fireFallConfirmed(fallDetectionStrategy, lastEvent);
+        }
+        lastEvent = null;
+    }
+
+    private void sendSms()
+    {
+        // TODO: implement sendSms()
+        String sms_content_default = getString(R.string.sms_content_default);
+        String sms_content = UserPreferencesHelper.getSmsContent(this);
+        if (UserPreferencesHelper.isAddLocationEnabled(this)) {
+            if (!sms_content.matches("\\s$"))
+                sms_content += " ";
+            sms_content += getString(R.string.sms_content_my_location) + " ";
+            String longitude = "", latitude = "";
+            sms_content += "http://www.google.com/maps?q=" + latitude + "," + longitude;
+        }
+        int id = R.string.fall_detected;
+    }
+
+    private void makeCall()
+    {
+        // TODO: implement makeCall()
+    }
+
     private static class SensorListener implements SensorEventListener
     {
         // Make explicit the dependence on dataManager
@@ -221,42 +278,23 @@ public class FallDetectionService extends Service
         }
     };
 
-    private static class FallListener implements OnFallDetectedListener
+    private class FallListener implements OnFallDetectedListener
     {
-        private FallDetectionService service;
-
-        public FallListener(FallDetectionService service) {
-            this.service = service;
-        }
-
         @Override
         public void onFallDetected(IFallDetectionStrategy sender, FallDetectionEvent event) {
-            StatisticsHelper.stepFallDetectedCount(service);
+            lastEvent = event;
+
             // dataManager.save
 
-            service.fireFallDetected(sender, event);
+            StatisticsHelper.stepFallDetectedCount(FallDetectionService.this);
+            fireFallDetected(sender, event);
 
-            Intent intent = new Intent(service, FallDetectedActivity.class);
+            Intent intent = new Intent(FallDetectionService.this, FallDetectedActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            service.startActivity(intent);
-        }
-
-        public void onFallConfirmed(IFallDetectionStrategy sender, FallDetectionEvent event) {
-            String sms_content_default = service.getString(R.string.sms_content_default);
-            String sms_content = UserPreferencesHelper.getSmsContent(service);
-            boolean add_location = UserPreferencesHelper.isAddLocationEnabled(service);
-            if (add_location) {
-                if (!sms_content.matches("\\s$"))
-                    sms_content += " ";
-                sms_content += service.getString(R.string.sms_content_my_location) + " ";
-                String longitude = "", latitude = "";
-                sms_content += "http://www.google.com/maps?q=" + latitude + "," + longitude;
-            }
-            int id = R.string.fall_detected;
-
-            StatisticsHelper.stepFallConfirmedCount(service);
-
-            service.fireFallConfirmed(sender, event);
+            // Use a "token" to match the event signaled to the FallDetectedActivity with the one
+            // that will be confirmed or denied.
+            intent.putExtra("token", lastEvent.hashCode());
+            startActivity(intent);
         }
     };
 
