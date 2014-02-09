@@ -2,7 +2,7 @@
 <resources>
     <string name="settings_activity">Impostazioni</string>
     <string name="fall_detection_service">Servizio per il rilevamento delle cadute</string>
-    <string name="fall_detected_activity">Rilevata caduta</string>
+    <string name="fall_detected_activity">Caduta rilevata!</string>
 
     <string name="not_set">(non impostato)</string>
     <string name="unknown_number">Numero sconosciuto</string>

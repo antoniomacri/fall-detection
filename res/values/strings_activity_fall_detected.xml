@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="fall_detected">A fall has been detected!</string>
+    <string name="confirm_fall">Confirm</string>
+    <string name="deny_fall">Deny</string>
+    <string name="action_list_header">The following actions will be performed:</string>
+    <string name="sms_will_be_sent">An SMS will be sent to: %s.</string>
+    <string name="phone_call_will_start">A phone call to %s will start in hands-free mode.</string>
 </resources>

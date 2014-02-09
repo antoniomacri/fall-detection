@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="fall_detected">È stata rilevata una caduta!</string>
+    <string name="confirm_fall">Conferma</string>
+    <string name="deny_fall">Nega</string>
+    <string name="sms_will_be_sent">Verrà inviato un SMS a: %s.</string>
+    <string name="phone_call_will_start">Verrà avviata una telefonata in viva voce a %s.</string>
 </resources>

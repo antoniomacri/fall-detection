@@ -2,7 +2,7 @@
 <resources>
     <string name="settings_activity">Settings</string>
     <string name="fall_detection_service">Fall detection service</string>
-    <string name="fall_detected_activity">Fall detected</string>
+    <string name="fall_detected_activity">Fall detected!</string>
 
     <string name="not_set">(not set)</string>
     <string name="unknown_number">Unknown number</string>
