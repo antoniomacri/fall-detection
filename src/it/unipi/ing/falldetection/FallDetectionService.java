@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import it.unipi.ing.falldetection.core.*;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -84,9 +83,32 @@ public class FallDetectionService extends Service
         return START_NOT_STICKY;
     }
 
+    private final class ServiceHandler extends Handler
+    {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            onHandleIntent((Intent)msg.obj);
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
+    }
+
+    /**
+     * Class used for the client Binder. Because we know this service always runs in the same
+     * process as its clients, we don't need to deal with IPC.
+     */
+    public class Binder extends android.os.Binder
+    {
+        public FallDetectionService getService() {
+            return FallDetectionService.this;
+        }
     }
 
     public boolean isActive() {
@@ -103,15 +125,16 @@ public class FallDetectionService extends Service
 
     private void onHandleIntent(Intent intent)
     {
-        if (FALLDETECTION_START.equals(intent.getAction())) {
-            startFallDetectionImpl();
+        String action = intent.getAction();
+        if (FALLDETECTION_START.equals(action)) {
+            doStartFallDetection();
         }
-        else if (FALLDETECTION_STOP.equals(intent.getAction())) {
-            stopFallDetectionImpl();
+        else if (FALLDETECTION_STOP.equals(action)) {
+            doStopFallDetection();
         }
     }
 
-    private void startFallDetectionImpl()
+    private void doStartFallDetection()
     {
         if (active) {
             return;
@@ -134,22 +157,24 @@ public class FallDetectionService extends Service
         intentPause.setAction(FALLDETECTION_STOP);
         PendingIntent pIntentPause = PendingIntent.getService(this, 0, intentPause, 0);
 
-        NotificationCompat.Builder b = new NotificationCompat.Builder(this)
-                .setContentTitle(getResources().getString(R.string.status_active))
-                .setContentText(getResources().getString(R.string.app_name))
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentIntent(pIntent)
-                .setAutoCancel(false);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this);
+        b.setContentTitle(getResources().getString(R.string.status_active));
+        b.setContentText(getResources().getString(R.string.app_name));
+        b.setSmallIcon(R.drawable.ic_launcher);
+        b.setContentIntent(pIntent);
+        b.setAutoCancel(false);
         b.addAction(android.R.drawable.ic_media_pause,
                 getResources().getString(R.string.tap_to_deactivate), pIntentPause);
 
         startService(new Intent(this, FallDetectionService.class));
+
         NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(ACTIVATION_NOTIFICATION_ID, b.build());
+
         fireFallDetectionStarted();
     }
 
-    private void stopFallDetectionImpl()
+    private void doStopFallDetection()
     {
         if (!active) {
             return;
@@ -159,37 +184,20 @@ public class FallDetectionService extends Service
         sensorManager.unregisterListener(sensorListener);
         active = false;
 
+        // Stop the service
         stopSelf();
+        // Now the service can be destroyed by the system
+        // (whenever no more clients are bound to it).
+
         NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(ACTIVATION_NOTIFICATION_ID);
+
         fireFallDetectionStopped(false, null);
-    }
-
-    private final class ServiceHandler extends Handler
-    {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            onHandleIntent((Intent)msg.obj);
-        }
-    }
-
-    /**
-     * Class used for the client Binder. Because we know this service always runs in the same
-     * process as its clients, we don't need to deal with IPC.
-     */
-    public class Binder extends android.os.Binder
-    {
-        public FallDetectionService getService() {
-            return FallDetectionService.this;
-        }
     }
 
     private static class SensorListener implements SensorEventListener
     {
+        // Make explicit the dependence on dataManager
         private SensorDataManager dataManager;
 
         public SensorListener(SensorDataManager dataManager) {
@@ -207,8 +215,7 @@ public class FallDetectionService extends Service
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 float[] values = new float[event.values.length];
                 System.arraycopy(event.values, 0, values, 0, values.length);
-                SensorData sd = new SensorData(event.sensor, values, event.accuracy,
-                        event.timestamp);
+                SensorData sd = new SensorData(event.sensor, values, event.accuracy, event.timestamp);
                 dataManager.feed(sd);
             }
         }
