@@ -39,7 +39,8 @@
     <string name="sms_content_dialog_message">Inserisci il testo dell\'SMS che sarà inviato in
         caso di caduta:</string>
     <string name="sms_content_default">Sono caduto e ho bisogno di assistenza.</string>
-    <string name="sms_content_my_location">La mia posizione attuale è:</string>
+    <string name="sms_content_my_location">La mia posizione attuale è: %s</string>
+    <string name="sms_content_my_location_url_format">http://www.google.com/maps?q=%1$d,%2$d</string>
     <string name="sms_recipients">Destinatari</string>
     <string name="sms_add_location">Posizione</string>
     <string name="sms_add_location_summary">Aggiungi informazioni sulla posizione usando il GPS</string>

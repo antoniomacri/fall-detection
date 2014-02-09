@@ -39,7 +39,8 @@
     <string name="sms_content_dialog_message">Insert the text of the message that will be sent in case
         of fall:</string>
     <string name="sms_content_default">I have fallen down and I need assistance.</string>
-    <string name="sms_content_my_location">My current location is:</string>
+    <string name="sms_content_my_location">My current location is: %s</string>
+    <string name="sms_content_my_location_url_format">http://www.google.com/maps?q=%1$d,%2$d</string>
     <string name="sms_recipients">Recipients</string>
     <string name="sms_add_location">Location</string>
     <string name="sms_add_location_summary">Add location information using GPS</string>

@@ -2,6 +2,7 @@ package it.unipi.ing.falldetection;
 
 import java.util.Vector;
 
+import it.unipi.ing.falldetection.ContactListPreference.Contact;
 import it.unipi.ing.falldetection.core.*;
 
 import android.app.NotificationManager;
@@ -9,16 +10,20 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.SmsManager;
 import android.util.Log;
 
 public class FallDetectionService extends Service
@@ -29,6 +34,7 @@ public class FallDetectionService extends Service
 
     private static final int DELAY = SensorManager.SENSOR_DELAY_GAME;
     private static final int ACTIVATION_NOTIFICATION_ID = R.string.fall_detection_service;
+    private static final String FALLDETECTION_SMS_SENT = "FALLDETECTION_SMS_SENT";
 
     private volatile Looper serviceLooper;
     private volatile ServiceHandler serviceHandler;
@@ -234,17 +240,40 @@ public class FallDetectionService extends Service
 
     private void sendSms()
     {
-        // TODO: implement sendSms()
-        String sms_content_default = getString(R.string.sms_content_default);
-        String sms_content = UserPreferencesHelper.getSmsContent(this);
+        String smsContent = UserPreferencesHelper.getSmsContent(this);
+
         if (UserPreferencesHelper.isAddLocationEnabled(this)) {
-            if (!sms_content.matches("\\s$"))
-                sms_content += " ";
-            sms_content += getString(R.string.sms_content_my_location) + " ";
-            String longitude = "", latitude = "";
-            sms_content += "http://www.google.com/maps?q=" + latitude + "," + longitude;
+            if (!smsContent.matches("\\s$")) {
+                smsContent += " ";
+            }
+            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                String link = getString(R.string.sms_content_my_location_url_format, latitude, longitude);
+                smsContent += getString(R.string.sms_content_my_location, link);
+            }
+            else {
+                // TODO: obtain location deferred
+            }
         }
-        int id = R.string.fall_detected;
+
+        SmsManager smsManager = SmsManager.getDefault();
+        Contact[] recipients = UserPreferencesHelper.getSmsRecipients(this);
+        for (Contact c : recipients) {
+            // We need to create a new BroadcastReceiver for each SMS, and each of them must
+            // receive intents with different actions (we distinguish intents by using the phone
+            // number). Each instance of the SmsSentBroadcastReceiver will unregister itself after
+            // being called.
+            SmsSentBroadcastReceiver receiver = new SmsSentBroadcastReceiver();
+            registerReceiver(receiver, new IntentFilter(FALLDETECTION_SMS_SENT + "/" + c.value));
+            Intent intent = new Intent(FALLDETECTION_SMS_SENT + "/" + c.value);
+            intent.putExtra("contact_name", c.title);
+            intent.putExtra("contact_number", c.value);
+            PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, intent, 0);
+            smsManager.sendTextMessage(c.value, null, smsContent, sentPI, null);
+        }
     }
 
     private void makeCall()

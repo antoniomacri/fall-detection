@@ -8,4 +8,10 @@
     <string name="unknown_number">Unknown number</string>
     <string name="no_accelerometer_available">No accelerometer available!</string>
     <string name="no_recipient_specified">No recipient specified</string>
+
+    <string name="cannot_send_sms">Cannot send SMS to %1$s on %2$s (%3$s).</string>
+    <string name="result_generic_error">generic error</string>
+    <string name="result_no_service">service not available</string>
+    <string name="result_radio_off">the radio is turned off</string>
+    <string name="result_unknown_error">unknown error</string>
 </resources>

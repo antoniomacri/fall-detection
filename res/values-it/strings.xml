@@ -8,4 +8,11 @@
     <string name="unknown_number">Numero sconosciuto</string>
     <string name="no_accelerometer_available">Nessun accelerometro disponibile!</string>
     <string name="no_recipient_specified">Nessun destinatario impostato</string>
+
+    <string name="cannot_send_sms">Problema nell\'invio dell\'SMS a %1$s sul numero %2$s
+        (%2$s).</string>
+    <string name="result_generic_error">errore generico</string>
+    <string name="result_no_service">servizio non disponibile</string>
+    <string name="result_radio_off">il trasmettitore è spento</string>
+    <string name="result_unknown_error">errore sconosciuto</string>
 </resources>
