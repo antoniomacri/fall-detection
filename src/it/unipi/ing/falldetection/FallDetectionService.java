@@ -24,8 +24,6 @@ import android.support.v4.app.NotificationCompat;
 
 public class FallDetectionService extends Service
 {
-    public static final String PREFERENCES_STATISTICS = "Stats";
-
     public static final String FALLDETECTION_START = "FALLDETECTION_START";
     public static final String FALLDETECTION_STOP = "FALLDETECTION_STOP";
 
@@ -102,16 +100,6 @@ public class FallDetectionService extends Service
 
     public void stopFallDetection() {
         onStartCommand(new Intent(FALLDETECTION_STOP, null, this, getClass()), 0, 1);
-    }
-
-    public int getFallDetectedCount() {
-        SharedPreferences preferences = getSharedPreferences(PREFERENCES_STATISTICS, 0);
-        return preferences.getInt("stats_falls_detected", 0);
-    }
-
-    public int getFallConfirmedCount() {
-        SharedPreferences preferences = getSharedPreferences(PREFERENCES_STATISTICS, 0);
-        return preferences.getInt("stats_falls_confirmed", 0);
     }
 
     private void onHandleIntent(Intent intent)
@@ -237,10 +225,7 @@ public class FallDetectionService extends Service
 
         @Override
         public void onFallDetected(IFallDetectionStrategy sender, FallDetectionEvent event) {
-            SharedPreferences preferences = service.getSharedPreferences(PREFERENCES_STATISTICS, 0);
-            int stats_falls_detected = preferences.getInt("stats_falls_detected", 0);
-            stats_falls_detected++;
-            preferences.edit().putInt("stats_falls_detected", stats_falls_detected);
+            StatisticsHelper.stepFallDetectedCount(service);
             // dataManager.save
 
             service.fireFallDetected(sender, event);
@@ -264,9 +249,7 @@ public class FallDetectionService extends Service
             }
             int id = R.string.fall_detected;
 
-            int stats_falls_confirmed = preferences.getInt("stats_falls_confirmed", 0);
-            stats_falls_confirmed++;
-            preferences.edit().putInt("stats_falls_confirmed", stats_falls_confirmed);
+            StatisticsHelper.stepFallConfirmedCount(service);
 
             service.fireFallConfirmed(sender, event);
         }

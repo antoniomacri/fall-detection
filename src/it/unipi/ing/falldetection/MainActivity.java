@@ -117,8 +117,8 @@ public class MainActivity extends Activity
         if (!bound) {
             return;
         }
-        falls_detected.setText(Integer.toString(service.getFallDetectedCount()));
-        falls_confirmed.setText(Integer.toString(service.getFallConfirmedCount()));
+        falls_detected.setText(Integer.toString(StatisticsHelper.getFallDetectedCount(this)));
+        falls_confirmed.setText(Integer.toString(StatisticsHelper.getFallConfirmedCount(this)));
     }
 
     /**
