@@ -10,7 +10,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -236,10 +235,9 @@ public class FallDetectionService extends Service
         }
 
         public void onFallConfirmed(IFallDetectionStrategy sender, FallDetectionEvent event) {
-            SharedPreferences preferences = service.getSharedPreferences("", 0);
             String sms_content_default = service.getString(R.string.sms_content_default);
-            String sms_content = preferences.getString("sms_content", sms_content_default);
-            boolean add_location = preferences.getBoolean("user_alerts_add_location", true);
+            String sms_content = UserPreferencesHelper.getSmsContent(service);
+            boolean add_location = UserPreferencesHelper.isAddLocationEnabled(service);
             if (add_location) {
                 if (!sms_content.matches("\\s$"))
                     sms_content += " ";
