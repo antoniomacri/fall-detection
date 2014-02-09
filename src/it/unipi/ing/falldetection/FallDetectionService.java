@@ -17,6 +17,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -24,6 +25,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class FallDetectionService extends Service
@@ -278,7 +280,24 @@ public class FallDetectionService extends Service
 
     private void makeCall()
     {
-        // TODO: implement makeCall()
+        Contact recipient = UserPreferencesHelper.getPhoneCallRecipient(this);
+        if (recipient == null) {
+            return;
+        }
+
+        // To set the speakers on we need to listen for changes of the phone state.
+        // The two alternatives are: a BroadcastReceiver for the intent ACTION_NEW_OUTGOING_CALL and
+        // a PhoneStateListener. The former choice seems to be better, since it allows to retrieve
+        // the number of the processing call and match it against the expected recipient's number.
+        // (A PhoneStateListener provides the phone number only in case of an incoming call.)
+        SpeakerPhoneBroadcastReceiver receiver = new SpeakerPhoneBroadcastReceiver(recipient.value);
+        registerReceiver(receiver, new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL));
+        registerReceiver(receiver, new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED));
+
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setData(Uri.parse("tel:" + recipient.value));
+        startActivity(intent);
     }
 
     private static class SensorListener implements SensorEventListener
