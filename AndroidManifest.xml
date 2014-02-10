@@ -21,7 +21,13 @@
             </intent-filter>
         </activity>
         <activity android:name="it.unipi.ing.falldetection.UserPreferencesActivity"
-            android:label="@string/settings_activity"
+            android:label="@string/user_preferences_activity"
+            android:parentActivityName="it.unipi.ing.falldetection.MainActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.unipi.ing.falldetection.MainActivity" />
+        </activity>
+        <activity android:name="it.unipi.ing.falldetection.UserInformationActivity"
+            android:label="@string/user_information_activity"
             android:parentActivityName="it.unipi.ing.falldetection.MainActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.unipi.ing.falldetection.MainActivity" />

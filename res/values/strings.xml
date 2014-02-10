@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="settings_activity">Settings</string>
+    <string name="user_preferences_activity">Settings</string>
+    <string name="user_information_activity">User information</string>
     <string name="fall_detection_service">Fall detection service</string>
     <string name="fall_detected_activity">Fall detected!</string>
 

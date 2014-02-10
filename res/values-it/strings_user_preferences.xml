@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="user_information">Informazioni sull\'utente</string>
-    <string name="user_sex">Sesso</string>
-    <string-array name="genders">
-        <item>Maschio</item>
-        <item>Femmina</item>
-    </string-array>
-    <string name="user_age">Età</string>
-    <string name="user_age_summary">%s anni</string>
-    <string name="user_age_dialog_message">Inserisci la tua età:</string>
-    <string name="user_height">Altezza</string>
-    <string name="user_height_summary">%s cm</string>
-    <string name="user_height_dialog_message">Inserisci la tua altezza in centimetri:</string>
-    <string name="user_weight">Peso</string>
-    <string name="user_weight_summary">%s kg</string>
-    <string name="user_weight_dialog_message">Inserisci il tuo peso in chilogrammi:</string>
-
     <string name="alerts">Segnalazioni</string>
     <string name="alerts_vibrate">Vibrazione</string>
     <string name="alerts_vibrate_summary">Vibra quando viene rilevata una caduta</string>

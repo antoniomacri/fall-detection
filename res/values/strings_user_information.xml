@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="user_information">User information</string>
+    <string name="user_sex">Sex</string>
+    <string-array name="genders">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string name="user_age">Age</string>
+    <string name="user_age_summary">%s years</string>
+    <string name="user_age_dialog_message">Insert your age:</string>
+    <string name="user_height">Height</string>
+    <string name="user_height_summary">%s cm</string>
+    <string name="user_height_dialog_message">Insert your height in centimeters:</string>
+    <string name="user_weight">Weight</string>
+    <string name="user_weight_summary">%s kg</string>
+    <string name="user_weight_dialog_message">Insert your weight in kilograms:</string>
+</resources>

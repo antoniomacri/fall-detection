@@ -200,12 +200,14 @@ public class MainActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.action_settings:
-            Intent i = new Intent(this, UserPreferencesActivity.class);
-            startActivityForResult(i, -1);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_user_preferences:
+                startActivityForResult(new Intent(this, UserPreferencesActivity.class), -1);
+                return true;
+            case R.id.action_user_information:
+                startActivityForResult(new Intent(this, UserInformationActivity.class), -1);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

@@ -1,4 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_settings" android:orderInCategory="100"
-        android:showAsAction="never" android:title="@string/settings_activity" />
+    <item android:id="@+id/action_user_preferences"
+        android:orderInCategory="100" android:showAsAction="never"
+        android:title="@string/user_preferences_activity" />
+    <item android:id="@+id/action_user_information"
+        android:orderInCategory="101" android:showAsAction="never"
+        android:title="@string/user_information_activity" />
 </menu>
