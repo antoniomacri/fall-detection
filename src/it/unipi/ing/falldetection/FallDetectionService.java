@@ -135,10 +135,11 @@ public class FallDetectionService extends Service
         onStartCommand(new Intent(FALLDETECTION_STOP, null, this, getClass()), 0, 1);
     }
 
-    public void confirmFall(int token, boolean confirmed) {
+    public void confirmFall(int token, boolean confirmed, String info) {
         Intent intent = new Intent(FALLDETECTION_CONFIRM_FALL, null, this, getClass());
         intent.putExtra("token", token);
         intent.putExtra("confirmed", confirmed);
+        intent.putExtra("info", info);
         onStartCommand(intent, 0, 1);
     }
 
@@ -153,8 +154,9 @@ public class FallDetectionService extends Service
         }
         else if (FALLDETECTION_CONFIRM_FALL.equals(action)) {
             boolean confirmed = intent.getBooleanExtra("confirmed", true);
+            String info = intent.getStringExtra("info");
             int token = intent.getIntExtra("token", 0);
-            doConfirmFall(token, confirmed);
+            doConfirmFall(token, confirmed, info);
         }
     }
 
@@ -219,7 +221,7 @@ public class FallDetectionService extends Service
         fireFallDetectionStopped(false, null);
     }
 
-    private void doConfirmFall(int token, boolean confirmed)
+    private void doConfirmFall(int token, boolean confirmed, String info)
     {
         if (lastEvent == null || token != lastEvent.hashCode()) {
             Log.w(getClass().getName(), "Attempt to confirm or deny an old event.");
@@ -235,6 +237,7 @@ public class FallDetectionService extends Service
             }
 
             StatisticsHelper.stepFallConfirmedCount(this);
+            lastEvent.notes = info;
             fireFallConfirmed(fallDetectionStrategy, lastEvent);
         }
         lastEvent = null;

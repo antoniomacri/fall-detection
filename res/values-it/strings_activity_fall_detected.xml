@@ -5,4 +5,9 @@
     <string name="deny_fall">Nega</string>
     <string name="sms_will_be_sent">Verrà inviato un SMS a: %s.</string>
     <string name="phone_call_will_start">Verrà avviata una telefonata in viva voce a %s.</string>
+
+    <string name="fall_confirmed">Conferma caduta</string>
+    <string name="fall_denied">Nega caduta</string>
+    <string name="provide_additional_info">Descrivi brevemente l\'evento appena accaduto e
+        inserisci eventualmente altre informazioni utili:</string>
 </resources>

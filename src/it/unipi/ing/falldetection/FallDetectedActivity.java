@@ -10,14 +10,17 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,21 +43,8 @@ public class FallDetectedActivity extends Activity
         Button confirm_fall = (Button)findViewById(R.id.confirm_fall);
         Button deny_fall = (Button)findViewById(R.id.deny_fall);
 
-        confirm_fall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                countDownTimer.cancel();
-                confirm(true);
-            }
-        });
-
-        deny_fall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                countDownTimer.cancel();
-                confirm(false);
-            }
-        });
+        confirm_fall.setOnClickListener(new promptAndConfirmOnClickListener(true));
+        deny_fall.setOnClickListener(new promptAndConfirmOnClickListener(false));
 
         boolean smsAlert = UserPreferencesHelper.isSmsAlertEnabled(this);
         boolean phoneCallAlert = UserPreferencesHelper.isPhoneCallAlertEnabled(this);
@@ -133,23 +123,55 @@ public class FallDetectedActivity extends Activity
 
             @Override
             public void onFinish() {
-                confirm(true);
+                confirm(true, "");
             }
         };
         countDownTimer.start();
     }
 
-    private void confirm(boolean confirmed) {
+    private class promptAndConfirmOnClickListener implements View.OnClickListener
+    {
+        private boolean confirmed;
+
+        public promptAndConfirmOnClickListener(boolean confirmed) {
+            this.confirmed = confirmed;
+        }
+
+        @Override
+        public void onClick(View v) {
+            countDownTimer.cancel();
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(FallDetectedActivity.this);
+            alert.setTitle(confirmed ? R.string.fall_confirmed : R.string.fall_denied);
+            alert.setMessage(R.string.provide_additional_info);
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(FallDetectedActivity.this);
+            alert.setView(input);
+
+            alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    confirm(confirmed, input.getText().toString());
+                }
+            });
+
+            alert.show();
+        }
+    }
+
+    private void confirm(boolean confirmed, String info) {
         Intent sIntent = new Intent(FallDetectedActivity.this, FallDetectionService.class);
-        bindService(sIntent, new BindAndConfirm(confirmed), 0);
+        bindService(sIntent, new BindAndConfirm(confirmed, info), 0);
     }
 
     private class BindAndConfirm implements ServiceConnection
     {
         private boolean confirmed;
+        private String info;
 
-        public BindAndConfirm(boolean confirmed) {
+        public BindAndConfirm(boolean confirmed, String info) {
             this.confirmed = confirmed;
+            this.info = info;
         }
 
         @Override
@@ -157,7 +179,7 @@ public class FallDetectedActivity extends Activity
             FallDetectionService.Binder b = (FallDetectionService.Binder)binder;
             Intent intent = getIntent();
             int token = intent.getIntExtra("token", 0);
-            b.getService().confirmFall(token, confirmed);
+            b.getService().confirmFall(token, confirmed, info);
             unbindService(this);
             finish();
         }

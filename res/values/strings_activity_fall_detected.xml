@@ -6,4 +6,9 @@
     <string name="action_list_header">The following actions will be performed:</string>
     <string name="sms_will_be_sent">An SMS will be sent to: %s.</string>
     <string name="phone_call_will_start">A phone call to %s will start in hands-free mode.</string>
+
+    <string name="fall_confirmed">Fall confirmed</string>
+    <string name="fall_denied">Fall denied</string>
+    <string name="provide_additional_info">Please describe the event and provide any additional
+        information below:</string>
 </resources>
