@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -16,5 +16,9 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+
+    <style name="Theme.Default" parent="@android:style/Theme" />
+    <style name="Theme.NoTitle" parent="@android:style/Theme.NoTitleBar" />
+    <style name="Theme.FullScreen" parent="@android:style/Theme.NoTitleBar.Fullscreen" />
 
 </resources>

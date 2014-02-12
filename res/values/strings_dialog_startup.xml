@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="header_startup_activity">
+        Welcome! Before getting started, please insert the
+        following information:</string>
+    <string name="user_sex:">Sex:</string>
+    <string name="user_age:">Age:</string>
+    <string name="user_age_unit">years</string>
+    <string name="user_height:">Height:</string>
+    <string name="user_height_unit">cm</string>
+    <string name="user_weight:">Weight:</string>
+    <string name="user_weight_unit">kg</string>
+
+    <string name="user_age_required">You must provide a value for your age!</string>
+    <string name="user_height_required">You must provide a value for your height!</string>
+    <string name="user_weight_required">You must provide a value for your weight!</string>
+
+    <string name="quit">Quit</string>
+</resources>

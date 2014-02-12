@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin" android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".StartupActivity" android:orientation="vertical" android:id="@+id/top_level_layout">
+
+    <TextView android:id="@+id/image_and_title" android:text="@string/app_name"
+        android:layout_height="wrap_content" android:layout_width="fill_parent"
+        android:layout_marginTop="10dp" android:layout_marginBottom="20dp"
+        android:clickable="false" android:focusable="false"
+        android:focusableInTouchMode="false" android:textSize="25sp"
+        android:drawableLeft="@drawable/ic_launcher" android:drawablePadding="10dp">
+    </TextView>
+
+    <TextView android:id="@+id/header_startup_activity" android:text="@string/header_startup_activity"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+        android:layout_below="@+id/image_and_title">
+    </TextView>
+
+    <TableLayout android:layout_below="@+id/header_startup_activity"
+        android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <TableRow>
+            <TextView android:id="@+id/label_user_sex" android:text="@string/user_sex"
+                android:layout_marginRight="10dp" />
+            <Spinner android:id="@+id/user_sex" android:title="@string/user_sex"
+                android:entryValues="@array/gender_values" android:entries="@array/genders"
+                android:layout_weight="1" android:layout_width="fill_parent"
+                android:gravity="center" android:textAlignment="center"
+                android:layout_span="2" />
+        </TableRow>
+        <TableRow>
+            <TextView android:id="@+id/label_user_age" android:text="@string/user_age"
+                android:layout_marginRight="10dp" />
+            <EditText android:id="@+id/user_age" android:title="@string/user_age"
+                android:gravity="center" android:inputType="numberDecimal"
+                android:layout_weight="1" android:layout_width="fill_parent" />
+            <TextView android:text="@string/user_age_unit"
+                android:layout_marginLeft="5dp" />
+        </TableRow>
+        <TableRow>
+            <TextView android:id="@+id/label_user_height" android:text="@string/user_height"
+                android:layout_marginRight="10dp" />
+            <EditText android:id="@+id/user_height" android:title="@string/user_height"
+                android:gravity="center" android:inputType="numberDecimal"
+                android:layout_weight="1" android:layout_width="fill_parent" />
+            <TextView android:text="@string/user_height_unit"
+                android:layout_marginLeft="5dp" />
+        </TableRow>
+        <TableRow>
+            <TextView android:id="@+id/label_user_weight" android:text="@string/user_weight"
+                android:layout_marginRight="10dp" />
+            <EditText android:id="@+id/user_weight" android:title="@string/user_weight"
+                android:gravity="center" android:inputType="numberDecimal"
+                android:layout_weight="1" android:layout_width="fill_parent" />
+            <TextView android:text="@string/user_weight_unit"
+                android:layout_marginLeft="5dp" />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="header_startup_activity">
+        Benvenuto! Prima di iniziare, inserisci i dati seguenti:</string>
+    <string name="user_sex:">Sesso:</string>
+    <string name="user_age:">Età:</string>
+    <string name="user_age_unit">anni</string>
+    <string name="user_height:">Altezza:</string>
+    <string name="user_height_unit">cm</string>
+    <string name="user_weight:">Peso:</string>
+    <string name="user_weight_unit">kg</string>
+
+    <string name="user_age_required">Devi specificare la tua età!</string>
+    <string name="user_height_required">Devi specificare la tua altezza!</string>
+    <string name="user_weight_required">Devi specificare il tuo peso!</string>
+
+    <string name="quit">Esci</string>
+</resources>

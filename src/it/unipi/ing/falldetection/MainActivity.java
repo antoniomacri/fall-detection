@@ -42,6 +42,8 @@ public class MainActivity extends Activity
 
         falls_detected = (TextView)findViewById(R.id.number_of_falls_detected);
         falls_confirmed = (TextView)findViewById(R.id.number_of_falls_confirmed);
+
+        StartupDialog.validate(this);
     }
 
     @Override
