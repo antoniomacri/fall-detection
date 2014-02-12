@@ -12,6 +12,11 @@ public final class UserInformationHelper
         return sharedPreferences.getString("user_sex", "");
     }
 
+    public static void setUserSex(Context context, String value) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putString("user_sex", value).commit();
+    }
+
     /**
      * Gets the user's age.
      *
@@ -24,6 +29,11 @@ public final class UserInformationHelper
             return Float.parseFloat(value);
         }
         return 0.0f;
+    }
+
+    public static void setUserAge(Context context, float value) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putString("user_age", Float.toString(value)).commit();
     }
 
     /**
@@ -40,6 +50,11 @@ public final class UserInformationHelper
         return 0.0f;
     }
 
+    public static void setUserHeight(Context context, float value) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putString("user_height", Float.toString(value)).commit();
+    }
+
     /**
      * Gets the user's weight.
      *
@@ -52,6 +67,11 @@ public final class UserInformationHelper
             return Float.parseFloat(value);
         }
         return 0.0f;
+    }
+
+    public static void setUserWeight(Context context, float value) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putString("user_weight", Float.toString(value)).commit();
     }
 
     private UserInformationHelper() {
