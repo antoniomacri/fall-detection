@@ -340,12 +340,17 @@ public class FallDetectionService extends Service
             StatisticsHelper.stepFallDetectedCount(FallDetectionService.this);
             fireFallDetected(sender, event);
 
-            Intent intent = new Intent(FallDetectionService.this, FallDetectedActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // Use a "token" to match the event signaled to the FallDetectedActivity with the one
-            // that will be confirmed or denied.
-            intent.putExtra("token", lastEvent.hashCode());
-            startActivity(intent);
+            if (UserPreferencesHelper.getAlertTimeout(FallDetectionService.this) == 0) {
+                doConfirmFall(event.hashCode(), true, "");
+            }
+            else {
+                Intent intent = new Intent(FallDetectionService.this, FallDetectedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Use a "token" to match the event signaled to the FallDetectedActivity with the
+                // one that will be confirmed or denied.
+                intent.putExtra("token", lastEvent.hashCode());
+                startActivity(intent);
+            }
         }
     };
 
