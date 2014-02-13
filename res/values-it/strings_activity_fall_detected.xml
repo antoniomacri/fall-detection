@@ -3,6 +3,7 @@
     <string name="fall_detected">È stata rilevata una caduta!</string>
     <string name="confirm_fall">Conferma</string>
     <string name="deny_fall">Nega</string>
+    <string name="action_list_header">Saranno intraprese le seguenti azioni:</string>
     <string name="sms_will_be_sent">Verrà inviato un SMS a: %s.</string>
     <string name="phone_call_will_start">Verrà avviata una telefonata in viva voce a %s.</string>
 
