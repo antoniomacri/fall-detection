@@ -34,7 +34,10 @@ public class FallDetectionService extends Service
     public static final String FALLDETECTION_STOP = "FALLDETECTION_STOP";
     public static final String FALLDETECTION_CONFIRM_FALL = "FALLDETECTION_CONFIRM_FALL";
 
-    private static final int DELAY = SensorManager.SENSOR_DELAY_GAME;
+    private static final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_UI;
+    private static final int SENSOR_RATE = 50; // Hz
+    private static final int PRE_PEAK_INTERVAL = 30; // seconds
+    private static final int POST_PEAK_INTERVAL = 30; // seconds
     private static final int ACTIVATION_NOTIFICATION_ID = R.string.fall_detection_service;
     private static final String FALLDETECTION_SMS_SENT = "FALLDETECTION_SMS_SENT";
 
@@ -47,6 +50,7 @@ public class FallDetectionService extends Service
     private SensorListener sensorListener;
     private FallListener fallListener;
     private boolean active = false;
+    private Uploader uploader;
 
     private FallDetectionEvent lastEvent;
 
@@ -69,15 +73,25 @@ public class FallDetectionService extends Service
         serviceHandler = new ServiceHandler(serviceLooper);
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        dataManager = new SensorDataManager();
+        String[] descriptions = new String[] {
+                "time[s]",
+                "acceleration_x[g]", "acceleration_y[g]", "acceleration_z[g]",
+                "acceleration_magnitude[g]"
+        };
+        dataManager = new SensorDataManager(SENSOR_RATE * (PRE_PEAK_INTERVAL + POST_PEAK_INTERVAL), 4,
+                descriptions);
         sensorListener = new SensorListener(dataManager);
         fallListener = new FallListener();
         fallDetectionStrategy = new SimpleFallDetectionStrategy(dataManager);
+
+        uploader = new Uploader(this);
     }
 
     @Override
     public void onDestroy()
     {
+        uploader.stop();
+
         serviceLooper.quit();
 
         fallDetectionStrategy = null;
@@ -167,11 +181,12 @@ public class FallDetectionService extends Service
         }
 
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (!sensorManager.registerListener(sensorListener, accelerometer, DELAY, serviceHandler)) {
+        if (!sensorManager.registerListener(sensorListener, accelerometer, SENSOR_DELAY, serviceHandler)) {
             String errorMessage = getResources().getString(R.string.no_accelerometer_available);
             fireFallDetectionStopped(true, errorMessage);
             return;
         }
+        fallDetectionStrategy = new SimpleFallDetectionStrategy(dataManager);
         fallDetectionStrategy.addListener(fallListener);
         active = true;
 
@@ -237,8 +252,10 @@ public class FallDetectionService extends Service
             }
 
             StatisticsHelper.stepFallConfirmedCount(this);
-            lastEvent.notes = info;
+            lastEvent.validate(confirmed, info);
             fireFallConfirmed(fallDetectionStrategy, lastEvent);
+
+            uploader.enqueue(lastEvent);
         }
         lastEvent = null;
     }
@@ -334,8 +351,6 @@ public class FallDetectionService extends Service
         @Override
         public void onFallDetected(IFallDetectionStrategy sender, FallDetectionEvent event) {
             lastEvent = event;
-
-            // dataManager.save
 
             StatisticsHelper.stepFallDetectedCount(FallDetectionService.this);
             fireFallDetected(sender, event);

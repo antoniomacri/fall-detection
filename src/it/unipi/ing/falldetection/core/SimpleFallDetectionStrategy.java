@@ -4,16 +4,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import android.util.Log;
-
 public class SimpleFallDetectionStrategy implements IFallDetectionStrategy, ISensorDataListener
 {
     protected static final double g = 9.80665;
     protected static final long timerDelay = 2500;
 
-    public SimpleFallDetectionStrategy(ISensorDataProvider source)
+    private SensorDataManager dataManager;
+
+    public SimpleFallDetectionStrategy(SensorDataManager dataManager)
     {
-        source.addListener(this);
+        this.dataManager = dataManager;
+        dataManager.addListener(this);
     }
 
     protected Vector<OnFallDetectedListener> listeners = new Vector<OnFallDetectedListener>();
@@ -28,11 +29,9 @@ public class SimpleFallDetectionStrategy implements IFallDetectionStrategy, ISen
         listeners.removeElement(listener);
     }
 
-    protected void fireFallEvent(long timestamp, float reliability) {
-        FallDetectionEvent event = new FallDetectionEvent(timestamp, reliability);
+    protected void fireFallEvent(long timestamp, float reliability, SensorDataBuffer snapshot) {
+        FallDetectionEvent event = new FallDetectionEvent(timestamp, reliability, snapshot);
         for (OnFallDetectedListener e : listeners) {
-            Log.i(Thread.currentThread() + getClass().getName(), "fireFallEvent to "
-                    + e.getClass().getName());
             e.onFallDetected(this, event);
         }
     }
@@ -41,7 +40,7 @@ public class SimpleFallDetectionStrategy implements IFallDetectionStrategy, ISen
     {
         @Override
         public void run() {
-            fireFallEvent(System.currentTimeMillis(), 1.0f);
+            fireFallEvent(System.currentTimeMillis(), 1.0f, dataManager.takeSnapshot());
         }
     };
 
